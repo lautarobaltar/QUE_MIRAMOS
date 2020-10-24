@@ -1,0 +1,3 @@
+- card layout
+- pantalla de chat
+- pantalla de settings (rangos, generos, tags, size de sesion, rating)

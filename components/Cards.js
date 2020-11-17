@@ -55,7 +55,30 @@ class Cards extends Component {
       onPanResponderMove: (evt, gestureState) => {
         this.position.setValue({ x: gestureState.dx, y: gestureState.dy });
       },
-      onPanResponderRelease: (evt, gestureState) => {},
+      onPanResponderRelease: (evt, gestureState) => {
+        if(gestureState.dx > 120) {
+          Animated.spring(this.position, {
+            toValue: {x: SCREEN_WIDTH + 100, y: gestureState.dy}
+          }).start(() => {
+            this.setState({ currentIndex: this.state.currentIndex + 1 }, () =>{
+              this.position.setValue({x: 0, y: 0})
+            })
+          })
+        } else if (gestureState.dx < -120) {
+          Animated.spring(this.position, {
+            toValue: {x: -SCREEN_WIDTH - 100, y: gestureState.dy}
+          }).start(()=> {
+            this.setState({currentIndex: this.state.currentIndex + 1}, () => {
+              this.position.setValue({x: 0, y: 0})
+            })
+          })
+        } else {
+          Animated.spring(this.position, {
+            toValue: {x: 0, y:0},
+            friction: 4
+          }).start()
+        }
+      },
     });
   }
   renderMovies = () => {
@@ -64,63 +87,53 @@ class Cards extends Component {
           return null;
       } else if ( i == this.state.currentIndex ) {
         return (
-            <TouchableHighlight
-          onPress={() => console.log("Card is clicked")}
-          onLongPress={() => console.log("Card is longpressed")}
-        >
           <Animated.View
-            {...this.PanResponder.panHandlers}
-            key={i}
-            style={[
-              { transform: this.position.getTranslateTransform() },
-              {
-                padding: 10,
-                height: SCREEN_HEIGHT - 180,
-                width: SCREEN_WIDTH,
-                position: "absolute",
-              }
-            ]}
-          >
-            <Image
-              style={{
-                flex: 1,
-                height: null,
-                width: null,
-                resizeMode: "cover",
-                borderRadius: 20,
-              }}
-              source={{ uri: item.uri }}
-            />
-          </Animated.View>
-        </TouchableHighlight>
+          {...this.PanResponder.panHandlers}
+          key={i}
+          style={[
+            { transform: this.position.getTranslateTransform() },
+            {
+              padding: 10,
+              height: SCREEN_HEIGHT - 180,
+              width: SCREEN_WIDTH,
+              position: "absolute",
+            }
+          ]}
+        >
+          <Image
+            style={{
+              flex: 1,
+              height: null,
+              width: null,
+              resizeMode: "cover",
+              borderRadius: 20,
+            }}
+            source={{ uri: item.uri }}
+          />
+        </Animated.View>
         )
       } else {
         return (
-            <TouchableHighlight
-          onPress={() => console.log("Card is clicked")}
-          onLongPress={() => console.log("Card is longpressed")}
-        >
           <Animated.View
-            key={i}
-            style={{
-                padding: 10,
-                height: SCREEN_HEIGHT - 180,
-                width: SCREEN_WIDTH,
-                position: "absolute",
-              }}
-          >
-            <Image
-              style={[{
-                flex: 1,
-                height: null,
-                width: null,
-                resizeMode: "cover",
-                borderRadius: 20,
-              }]}
-              source={{ uri: item.uri }}
-            />
-          </Animated.View>
-        </TouchableHighlight>
+          key={i}
+          style={{
+              padding: 10,
+              height: SCREEN_HEIGHT - 180,
+              width: SCREEN_WIDTH,
+              position: "absolute",
+            }}
+        >
+          <Image
+            style={[{
+              flex: 1,
+              height: null,
+              width: null,
+              resizeMode: "cover",
+              borderRadius: 20,
+            }]}
+            source={{ uri: item.uri }}
+          />
+        </Animated.View>
         )
       }
     }).reverse();

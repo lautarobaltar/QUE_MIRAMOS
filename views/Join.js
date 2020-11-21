@@ -9,9 +9,9 @@ import { OpenSansCondensed_700Bold } from "@expo-google-fonts/open-sans-condense
 import { OpenSans_300Light } from "@expo-google-fonts/open-sans";
 import { useNavigation } from '@react-navigation/native';
 
-export default function Login() {
+export default function Join() {
   const navigation = useNavigation();
-  const [value, onChangeText] = React.useState("Your name");
+  const [value, onChangeText] = React.useState("Room PIN");
   let [fontsLoaded] = useFonts({
     OpenSansCondensed_700Bold,
     OpenSans_300Light,
@@ -50,14 +50,15 @@ export default function Login() {
           value={value}
         />
         <CustomButton
-          title="Create a room"
+          title="Join room"
           style={{ marginTop: 8, marginBottom: 8 }}
-          onPress={() => navigation.navigate('Create')}
+          onPress={() => navigation.navigate('Swiper')}
         />
+        {/* 
         <CustomButton 
           title="Join a room"
           onPress={() => navigation.navigate('Join')}
-        />
+        /> */}
       </View>
     );
   }

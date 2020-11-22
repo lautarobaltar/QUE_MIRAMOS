@@ -79,7 +79,7 @@ export default function Create() {
           style={{
             textTransform: "uppercase",
           }}
-          onPress={() => navigation.navigate('Swiper')}
+          onPress={() => navigation.navigate('Preferences')}
         />
       </View>
     );

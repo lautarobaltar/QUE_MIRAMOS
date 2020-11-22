@@ -11,6 +11,7 @@ import Settings from "./views/Settings";
 import Login from "./views/Login";
 import Create from "./views/Create";
 import Join from "./views/Join";
+import Preferences from "./views/Preferences";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -21,10 +22,11 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Swiper" component={Swiper} />
-          <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Join" component={Join} />
           <Stack.Screen name="Create" component={Create} />
+          <Stack.Screen name="Preferences" component={Preferences} />
+          <Stack.Screen name="Swiper" component={Swiper} />
           <Stack.Screen name="Chat" component={Chat} />
           <Stack.Screen name="Settings" component={Settings} />
         </Stack.Navigator>

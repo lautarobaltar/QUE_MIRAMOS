@@ -46,8 +46,18 @@ class Cards extends Component {
     super();
     this.position = new Animated.ValueXY();
     this.state = {
-        currentIndex: 0
+        currentIndex: 0,
+        movieList: [],
+
     }
+  }
+  componentDidMount() {
+    fetch(this.props.movieList)
+    .then((response) => response.json())
+    .then((json) => {
+      this.setState({movieList: json.results})
+    })
+    .catch((error) => console.error(error))
   }
   componentWillMount() {
     this.PanResponder = PanResponder.create({
@@ -58,7 +68,8 @@ class Cards extends Component {
       onPanResponderRelease: (evt, gestureState) => {
         if(gestureState.dx > 120) {
           Animated.spring(this.position, {
-            toValue: {x: SCREEN_WIDTH + 100, y: gestureState.dy}
+            toValue: {x: SCREEN_WIDTH + 100, y: gestureState.dy},
+            useNativeDriver: true
           }).start(() => {
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () =>{
               this.position.setValue({x: 0, y: 0})
@@ -66,7 +77,8 @@ class Cards extends Component {
           })
         } else if (gestureState.dx < -120) {
           Animated.spring(this.position, {
-            toValue: {x: -SCREEN_WIDTH - 100, y: gestureState.dy}
+            toValue: {x: -SCREEN_WIDTH - 100, y: gestureState.dy},
+            useNativeDriver: true
           }).start(()=> {
             this.setState({currentIndex: this.state.currentIndex + 1}, () => {
               this.position.setValue({x: 0, y: 0})
@@ -75,18 +87,19 @@ class Cards extends Component {
         } else {
           Animated.spring(this.position, {
             toValue: {x: 0, y:0},
-            friction: 4
+            friction: 4,
+            useNativeDriver: true
           }).start()
         }
       },
     });
   }
-  renderMovies = () => {
-    return mockMovies.map((item, i) => {
+  renderMovies = (apiCall) => {
+    return apiCall.map((item, i) => {
       if (i < this.state.currentIndex ) {
           return null;
       } else if ( i == this.state.currentIndex ) {
-        return (
+        return (        
           <Animated.View
           {...this.PanResponder.panHandlers}
           key={i}
@@ -100,7 +113,7 @@ class Cards extends Component {
             }
           ]}
         >
-          <Image
+           <Image
             style={{
               flex: 1,
               height: null,
@@ -108,7 +121,7 @@ class Cards extends Component {
               resizeMode: "cover",
               borderRadius: 20,
             }}
-            source={{ uri: item.uri }}
+            source={{ uri: ("https://image.tmdb.org/t/p/w400" + item.poster_path) }}
           />
         </Animated.View>
         )
@@ -123,7 +136,7 @@ class Cards extends Component {
               position: "absolute",
             }}
         >
-          <Image
+           <Image
             style={[{
               flex: 1,
               height: null,
@@ -131,17 +144,24 @@ class Cards extends Component {
               resizeMode: "cover",
               borderRadius: 20,
             }]}
-            source={{ uri: item.uri }}
+            source={{ uri: "https://image.tmdb.org/t/p/w400" + item.poster_path }}
           />
         </Animated.View>
         )
       }
     }).reverse();
   };
+  
   render() {
+    const { movieList } = this.state;
+    movieList.forEach(item => {
+      if(item.poster_path != null){
+        Image.prefetch("https://image.tmdb.org/t/p/w400" + item.poster_path)
+      }
+    });
     return (
       <View style={{ flex: 8 }}>
-        <View style={{ flex: 1 }}>{this.renderMovies()}</View>
+        <View style={{ flex: 1 }}>{this.renderMovies(movieList)}</View>
       </View>
     );
   }

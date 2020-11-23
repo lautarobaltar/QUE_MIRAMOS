@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TextInput, Image } from "react-native";
 import styles from "./styles/login";
 import { SafeAreaView, Text, View } from "react-native";
@@ -8,14 +8,37 @@ import { useFonts } from "expo-font";
 import { OpenSansCondensed_700Bold } from "@expo-google-fonts/open-sans-condensed";
 import { OpenSans_300Light } from "@expo-google-fonts/open-sans";
 import { useNavigation } from '@react-navigation/native';
+import { initiateSocket, disconnectSocket,
+  subscribeToChat, sendMessage } from '../components/Socket';
+
+
 
 export default function Join() {
   const navigation = useNavigation();
+  const rooms = ['A', 'B', 'C'];
+  const [room, setRoom] = useState(rooms[0]);
   const [value, onChangeText] = React.useState("Room PIN");
+
   let [fontsLoaded] = useFonts({
     OpenSansCondensed_700Bold,
     OpenSans_300Light,
   });
+
+  useEffect(() => {
+    if (room) {
+      console.log("initiate socket with room")
+      initiateSocket(room);
+    }
+    subscribeToChat((err, data) => {
+      if(err) return;
+      setChat(oldChats =>[data, ...oldChats])
+    });
+
+    return () => {
+      disconnectSocket();
+    }
+  }, [room]);
+
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
@@ -52,7 +75,10 @@ export default function Join() {
         <CustomButton
           title="Join room"
           style={{ marginTop: 8, marginBottom: 8 }}
-          onPress={() => navigation.navigate('Swiper')}
+          onPress={() => {
+            initiateSocket(value)
+            navigation.navigate('Swiper')
+          }}
         />
         {/* 
         <CustomButton 

@@ -1,13 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
-import styles from "../components/styles/index"
-import { SafeAreaView, Text, View } from 'react-native';
-import Header from "../components/Header"
-import Cards from "../components/Cards"
-import Buttons from "../components/Buttons"
+import socketIOClient from "socket.io-client";
 
 export default function Chat() {
+
   const [messages, setMessages] = useState([]);
+
+  socket.on('newMessage', function(message) {
+    setMessages(message)
+  })
+
   useState(() => {
     setMessages([
       {
@@ -24,6 +26,7 @@ export default function Chat() {
   }, [])
 
   const onSend = useCallback((messages = []) => {
+    console.log(messages)
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
   }, [])
 

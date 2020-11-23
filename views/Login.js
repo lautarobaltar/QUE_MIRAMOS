@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TextInput, Image } from "react-native";
 import styles from "./styles/login";
 import { SafeAreaView, Text, View } from "react-native";
@@ -9,13 +9,16 @@ import { OpenSansCondensed_700Bold } from "@expo-google-fonts/open-sans-condense
 import { OpenSans_300Light } from "@expo-google-fonts/open-sans";
 import { useNavigation } from '@react-navigation/native';
 
-export default function Login() {
+export default function Login(props) {
+
   const navigation = useNavigation();
   const [value, onChangeText] = React.useState("Your name");
+
   let [fontsLoaded] = useFonts({
     OpenSansCondensed_700Bold,
     OpenSans_300Light,
   });
+
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {

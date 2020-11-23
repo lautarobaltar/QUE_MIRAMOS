@@ -13,31 +13,29 @@ import { initiateSocket, disconnectSocket,
 
 
 
-export default function Join() {
+export default function Join(props) {
   const navigation = useNavigation();
-  const rooms = ['A', 'B', 'C'];
-  const [room, setRoom] = useState(rooms[0]);
-  const [value, onChangeText] = React.useState("Room PIN");
+  
+  const [value, onChangeText] = React.useState("");
 
   let [fontsLoaded] = useFonts({
     OpenSansCondensed_700Bold,
     OpenSans_300Light,
   });
 
-  useEffect(() => {
-    if (room) {
-      console.log("initiate socket with room")
-      initiateSocket(room);
-    }
-    subscribeToChat((err, data) => {
-      if(err) return;
-      setChat(oldChats =>[data, ...oldChats])
-    });
+  // useEffect(() => {
+  //   if (room.length!=0) {
+  //     initiateSocket(room);
+  //   }
+  //   // subscribeToChat((err, data) => {
+  //   //   if(err) return;
+  //   //   setChat(oldChats =>[data, ...oldChats])
+  //   // });
 
-    return () => {
-      disconnectSocket();
-    }
-  }, [room]);
+  //   return () => {
+  //     disconnectSocket();
+  //   }
+  // }, [room]);
 
   if (!fontsLoaded) {
     return <AppLoading />;
@@ -76,7 +74,8 @@ export default function Join() {
           title="Join room"
           style={{ marginTop: 8, marginBottom: 8 }}
           onPress={() => {
-            initiateSocket(value)
+            // let params = { name: "lautaro", room : value}
+            // initiateSocket(props.socket,params)
             navigation.navigate('Swiper')
           }}
         />

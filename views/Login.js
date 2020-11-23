@@ -7,9 +7,12 @@ import { AppLoading } from "expo";
 import { useFonts } from "expo-font";
 import { OpenSansCondensed_700Bold } from "@expo-google-fonts/open-sans-condensed";
 import { OpenSans_300Light } from "@expo-google-fonts/open-sans";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
+import SocketContext from "../components/SocketContext";
+import UserContext from "../components/UserContext";
+import { socket } from "../components/Socket";
 
-export default function Login() {
+function Login(props) {
   const navigation = useNavigation();
   const [value, onChangeText] = React.useState("Your name");
   let [fontsLoaded] = useFonts({
@@ -52,13 +55,28 @@ export default function Login() {
         <CustomButton
           title="Create a room"
           style={{ marginTop: 8, marginBottom: 8 }}
-          onPress={() => navigation.navigate('Create')}
+          onPress={() => {
+            socket.emit("create", value, function (err) {
+              if (err) {
+                alert(err);
+                navigation.navigate("Login");
+              } else {
+                console.log("No Error");
+                navigation.navigate("Create");
+              }
+            });
+          }}
         />
-        <CustomButton 
+        <CustomButton
           title="Join a room"
-          onPress={() => navigation.navigate('Join')}
+          onPress={() => {
+            navigation.navigate("Join");
+          }}
         />
       </View>
     );
   }
 }
+
+
+export default Login;

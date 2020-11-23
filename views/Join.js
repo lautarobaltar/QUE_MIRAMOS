@@ -7,15 +7,16 @@ import { AppLoading } from "expo";
 import { useFonts } from "expo-font";
 import { OpenSansCondensed_700Bold } from "@expo-google-fonts/open-sans-condensed";
 import { OpenSans_300Light } from "@expo-google-fonts/open-sans";
-import { useNavigation } from '@react-navigation/native';
-import { initiateSocket, disconnectSocket,
-  subscribeToChat, sendMessage } from '../components/Socket';
+import { useNavigation } from "@react-navigation/native";
+import SocketContext from "../components/SocketContext";
+import UserContext from "../components/UserContext";
+import { socket } from "../components/Socket";
+/* import { initiateSocket, disconnectSocket,
+  subscribeToChat, sendMessage } from '../components/Socket'; */
 
-
-
-export default function Join() {
+function Join(props) {
   const navigation = useNavigation();
-  const rooms = ['A', 'B', 'C'];
+  const rooms = ["A", "B", "C"];
   const [room, setRoom] = useState(rooms[0]);
   const [value, onChangeText] = React.useState("Room PIN");
 
@@ -24,7 +25,7 @@ export default function Join() {
     OpenSans_300Light,
   });
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (room) {
       console.log("initiate socket with room")
       initiateSocket(room);
@@ -37,7 +38,7 @@ export default function Join() {
     return () => {
       disconnectSocket();
     }
-  }, [room]);
+  }, [room]); */
 
   if (!fontsLoaded) {
     return <AppLoading />;
@@ -76,8 +77,16 @@ export default function Join() {
           title="Join room"
           style={{ marginTop: 8, marginBottom: 8 }}
           onPress={() => {
-            initiateSocket(value)
-            navigation.navigate('Swiper')
+            let params = {name: 'pija', room: value};
+            socket.emit("join", params, function (err) {
+              if (err) {
+                alert(err);
+                navigation.navigate("Login");
+              } else {
+                console.log("No Error");
+                navigation.navigate("Swiper");
+              }
+            });
           }}
         />
         {/* 
@@ -89,3 +98,15 @@ export default function Join() {
     );
   }
 }
+
+const JoinWithSocket = (props) => (
+  <SocketContext.Consumer>
+    {(socket) => (
+      <UserContext.Consumer>
+        {(user) => <Join {...props} socket={socket} user={user} />}
+      </UserContext.Consumer>
+    )}
+  </SocketContext.Consumer>
+);
+
+export default JoinWithSocket;

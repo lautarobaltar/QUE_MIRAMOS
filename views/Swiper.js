@@ -4,8 +4,13 @@ import { SafeAreaView, Text, View } from 'react-native';
 import Header from "../components/Header"
 import Cards from "../components/Cards"
 import Buttons from "../components/Buttons"
+import { socket } from "../components/Socket";
 
 export default function Swiper() {
+  socket.on("getRoomPin", (roomPin) => {
+    setRoomState({pin: roomPin});
+    console.log(roomPin);
+  })
   return (
     <SafeAreaView style={styles.container}>
 

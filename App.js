@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./components/styles/index";
 import { SafeAreaView, Text, View, Button } from "react-native";
 import Header from "./components/Header";
@@ -14,10 +14,25 @@ import Join from "./views/Join";
 import Preferences from "./views/Preferences";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import io from 'socket.io-client';
+import SocketContext from './components/SocketContext';
+import UserContext from './components/UserContext';
+import {socket} from './components/Socket';
+// import { initiateSocket, disconnectSocket,
+//   subscribeToChat, sendMessage } from './components/Socket';
 
 const Stack = createStackNavigator();
 
-export default function App() {
+let user = {
+  name: '',
+  room: ''
+};
+
+export function App() {
+  useEffect(() => {
+    console.log(`Connecting socket...`);
+    console.log(socket);
+  })
   return (
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
@@ -34,3 +49,5 @@ export default function App() {
     </SafeAreaView>
   );
 }
+
+export default App;

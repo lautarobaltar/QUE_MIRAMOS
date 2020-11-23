@@ -1,12 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
-import styles from "../components/styles/index"
+import styles from "../components/styles/index";
 import { SafeAreaView, Text, View } from 'react-native';
-import Header from "../components/Header"
-import Cards from "../components/Cards"
-import Buttons from "../components/Buttons"
+import Header from "../components/Header";
+import Cards from "../components/Cards";
+import Buttons from "../components/Buttons";
+import { socket } from "../components/Socket";
+
 
 export default function Chat() {
+  const randomId = (Math.random() * 100);
   const [messages, setMessages] = useState([]);
   useState(() => {
     setMessages([
@@ -22,16 +25,21 @@ export default function Chat() {
       },
     ])
   }, [])
-
   const onSend = useCallback((messages = []) => {
-    setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+   
+    socket.emit("message", messages[0]);
+    socket.on("message", msg => {
+      console.log(msg);
+      setMessages(previousMessages => GiftedChat.append(previousMessages, msg));
+    })
   }, [])
 
   return (
     <GiftedChat
       messages={messages}
       onSend={messages => onSend(messages)}
-      user={{_id: 1}}
+      renderUsernameOnMessage={true}
+      user={{_id: randomId, username: 'pepe'}}
     />
   );
 }

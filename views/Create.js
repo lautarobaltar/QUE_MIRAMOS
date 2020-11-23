@@ -17,7 +17,9 @@ import UserContext from "../components/UserContext";
 import { socket } from "../components/Socket";
 
 function Create(props) {
-  const [roomState, setRoomState] = useState({pin: '', users: ''});
+  const [roomState, setRoomState] = useState({pin: ''});
+  const [usersState, setUsersState] = useState();
+
   const navigation = useNavigation();
   const [value, onChangeText] = React.useState("Your name");
   useEffect(() => {
@@ -31,9 +33,9 @@ function Create(props) {
     
   });
   socket.on("updateUsersList", (onlineUsers) => {
+    setUsersState(onlineUsers);
     console.log(onlineUsers);
-    setRoomState({users: onlineUsers});
-    console.log(roomState.users);
+    console.log(usersState);   
   })
   let [fontsLoaded] = useFonts({
     OpenSansCondensed_700Bold,
@@ -83,7 +85,7 @@ function Create(props) {
               flexGrow: 0,
               marginBottom: 30,
             }}
-            data={roomState.users}
+            data={usersState}
             renderItem={({ item }) => (
               <Text style={{ paddingBottom: 5, fontSize: 16 }}>
                 {" "}
@@ -96,7 +98,7 @@ function Create(props) {
         <CustomButton
           title="Start game"
           onPress={() => {
-            // socket.emit("getRoomPin");
+            navigation.navigate("Swiper");
           }}
         />
       </View>

@@ -27,19 +27,11 @@ class Cards extends Component {
   }
   componentDidMount() {
     fetch(this.props.movieList)
-<<<<<<< HEAD
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({ movieList: json.results });
-      })
-      .catch((error) => console.error(error));
-=======
     .then((response) => response.json())
     .then((json) => {
       this.setState({movieList: json.results.slice(0,15)})
     })
     .catch((error) => console.error(error))
->>>>>>> origin/lau-new
   }
   componentWillMount() {
     this.PanResponder = PanResponder.create({
@@ -112,6 +104,7 @@ class Cards extends Component {
                   imageStyle={{
                     borderBottomLeftRadius: 20,
                     borderBottomRightRadius: 20,
+                    width: '100%', height: '100%'
                   }}
                   source={require("../assets/gradient.png")}
                 >

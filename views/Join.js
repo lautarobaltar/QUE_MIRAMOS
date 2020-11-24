@@ -87,7 +87,7 @@ function Join(props) {
                 navigation.navigate("Login");
               } else {
                 console.log("No Error");
-                navigation.navigate("Swiper");
+                navigation.navigate("Create");
               }
             });
           }}

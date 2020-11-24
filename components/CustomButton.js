@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
     }
 });
 
-const CustomButton = ({onPress, title, style}) => (
-    <TouchableOpacity activeOpacity={0.8} onPress={onPress} style={[styles.customButton, style]}>
+const CustomButton = ({onPress, title, style, disabled}) => (
+    <TouchableOpacity activeOpacity={0.8} onPress={onPress} disabled={disabled} style={[styles.customButton, style]}>
         <Text style={styles.customButtonText}> {title} </Text>
     </TouchableOpacity>
 )

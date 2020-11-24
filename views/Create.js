@@ -112,8 +112,7 @@ function Create(props) {
         ) : (
           <Text
           style={{
-            fontFamily: "OpenSansCondensed_700Bold",
-            textTransform: "uppercase",
+            fontFamily: "OpenSans_300Light",
             letterSpacing: -0.5,
             fontSize: 20,
             marginBottom: 0,

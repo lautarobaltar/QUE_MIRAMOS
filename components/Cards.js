@@ -26,7 +26,7 @@ class Cards extends Component {
     this.state = {
       currentIndex: 0,
       movieList: [],
-      swipes: 0,
+      swipes: ''
     };
   }
   componentDidMount() {
@@ -247,7 +247,7 @@ class Cards extends Component {
       <View style={{ flex: 8 }}>
         <View style={{ flex: 7 }}>
           {this.renderMovies(movieList)}
-          {this.state.swipes < 3 ? (
+          {this.state.swipes == 0 ? (
             <View
               style={{
                 height: "100%",

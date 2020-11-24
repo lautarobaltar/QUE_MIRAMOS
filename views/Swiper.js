@@ -4,16 +4,19 @@ import { SafeAreaView, Text, View } from 'react-native';
 import Header from "../components/Header"
 import Cards from "../components/Cards"
 import Buttons from "../components/Buttons"
-import { socket } from "../components/Socket";
+import UserContext from "../components/UserContext";
 
-export default function Swiper() {
+function Swiper(props) {
+  
+  let search = "http://morgarth.dumb1.com:3000" + props.user.query
+
   return (
     <SafeAreaView style={styles.container}>
 
       {/* Header */}
       <Header />
       {/* Cards */}
-      <Cards movieList="http://morgarth.dumb1.com:3000/api/movies/" />
+      <Cards movieList={search} />
       {/* Buttons */}
       <Buttons />
 
@@ -24,3 +27,11 @@ export default function Swiper() {
     </SafeAreaView>
   );
 }
+
+const SwiperWithContext = (props) => (
+  <UserContext.Consumer>
+    {(user) => <Swiper {...props} user={user} />}
+  </UserContext.Consumer>
+);
+
+export default SwiperWithContext;

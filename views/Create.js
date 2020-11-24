@@ -34,7 +34,7 @@ function Create(props) {
 
     socket.on("start", () => {
       navigation.navigate("Swiper")
-    })
+    });
     
   });
   socket.on("updateUsersList", (onlineUsers) => {
@@ -104,7 +104,6 @@ function Create(props) {
           disabled={!props.user.admin}
           title="Start game"
           onPress={() => {
-            socket.emit("gameStart");
             navigation.navigate("Preferences");
           }}
         />

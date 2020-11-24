@@ -7,13 +7,16 @@ import { AppLoading } from "expo";
 import { useFonts } from "expo-font";
 import { OpenSansCondensed_700Bold } from "@expo-google-fonts/open-sans-condensed";
 import { OpenSans_300Light } from "@expo-google-fonts/open-sans";
-import { useNavigation } from '@react-navigation/native';
+import { useLinkProps, useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { Label } from "@material-ui/icons";
 import RNPickerSelect from 'react-native-picker-select';
+import { socket } from "../components/Socket";
+import UserContext from "../components/UserContext";
 
 
-export default function Preferences() {
+function Preferences(props) {
+
   const [genre, setGenre] = useState([{
     genre: ''
   }]);
@@ -21,6 +24,9 @@ export default function Preferences() {
     stars: ''
   }]);
   const [genres, setGenres] = useState([]);
+
+  const [value, onChangeText] = React.useState("Keywords");
+
   useEffect(() => {
     async function fetchGenres() {
       const res = await fetch('http://morgarth.dumb1.com:3000/api/genres/');
@@ -31,7 +37,7 @@ export default function Preferences() {
     fetchGenres();
   }, []
   )
-  const [value, onChangeText] = React.useState("Keywords");
+
   const navigation = useNavigation();
   let [fontsLoaded] = useFonts({
     OpenSansCondensed_700Bold,
@@ -97,9 +103,40 @@ export default function Preferences() {
           style={{
             textTransform: "uppercase",
           }}
-          onPress={() => navigation.navigate('Swiper')}
+          onPress={() => {
+            loadPreferences(genre,stars,value, props.user)
+            socket.emit("gameStart");
+            navigation.navigate('Swiper')
+          }
+          }
         />
       </View>
     );
   }
 }
+
+function loadPreferences(genre,stars,keywords,user){
+  let query = '/api/movies/'
+  if(keywords!="Keywords"){
+    query = "/api/movies/search/"+keywords
+  } else {
+    console.log(genre.genre)
+    console.log(stars.stars)
+    if(genre.genre !=null && stars.stars==undefined){
+      console.log(genre.genre)
+      query="/api/movies/genre/"+genre.genre
+    } else if(genre.genre !=null && stars.stars!=undefined){
+      query=`/api/movies/filter/language=en-US&page=1&with_genres=${genre.genre}&vote_average.gte=${stars.stars * 2}`
+    }
+  }
+  console.log(query)
+  user.query = query;
+}
+
+const PreferencesWithContext = (props) => (
+  <UserContext.Consumer>
+    {(user) => <Preferences {...props} user={user} />}
+  </UserContext.Consumer>
+);
+
+export default PreferencesWithContext;

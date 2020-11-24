@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import Buttons from "../components/Buttons";
+import CustomButton from "../components/CustomButton";
 import styles from "./styles/index";
 import {
   Text,
@@ -15,6 +17,7 @@ import { socket } from "./Socket";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
+const MAX_SWIPES = 15;
 
 class Cards extends Component {
   constructor() {
@@ -23,15 +26,17 @@ class Cards extends Component {
     this.state = {
       currentIndex: 0,
       movieList: [],
+      swipes: ''
     };
   }
   componentDidMount() {
     fetch(this.props.movieList)
-    .then((response) => response.json())
-    .then((json) => {
-      this.setState({movieList: json.results.slice(0,15)})
-    })
-    .catch((error) => console.error(error))
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({ movieList: json.results.slice(0, MAX_SWIPES) });
+        this.setState({ swipes: MAX_SWIPES });
+      })
+      .catch((error) => console.error(error));
   }
   componentWillMount() {
     this.PanResponder = PanResponder.create({
@@ -45,17 +50,22 @@ class Cards extends Component {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
-            console.log("movement right!")
-            socket.emit("likedMovie",this.state.movieList[this.state.currentIndex])
-            this.setState({ currentIndex: this.state.currentIndex + 1 }, () =>{
-              this.position.setValue({x: 0, y: 0})
-            })
-          })
+            this.setState({ swipes: this.state.swipes - 1 });
+            console.log("movement right!");
+            socket.emit(
+              "likedMovie",
+              this.state.movieList[this.state.currentIndex]
+            );
+            this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
+              this.position.setValue({ x: 0, y: 0 });
+            });
+          });
         } else if (gestureState.dx < -120) {
           Animated.spring(this.position, {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
+            this.setState({ swipes: this.state.swipes - 1 });
             console.log("movement left!");
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 });
@@ -98,20 +108,22 @@ class Cards extends Component {
                   right: 0,
                   position: "absolute",
                   padding: 10,
+                  zIndex: this.state.currentIndex + 1,
                 }}
               >
-                {/* <ImageBackground
+                <ImageBackground
+                  style={{ width: "100%", height: "100%" }}
                   imageStyle={{
                     borderBottomLeftRadius: 20,
                     borderBottomRightRadius: 20,
                   }}
                   source={require("../assets/gradient.png")}
-                > */}
-                  <View style={{ padding: "1em" }}>
+                >
+                  <View style={{ padding: 16 }}>
                     <Text
                       numberOfLines={2}
                       style={{
-                       fontSize: 40,
+                        fontSize: 40,
                         color: "#ffffff",
                         textShadowColor: "rgba(0, 0, 0, 0.75)",
                         textShadowOffset: { width: -1, height: 1 },
@@ -130,9 +142,8 @@ class Cards extends Component {
                       {item.overview}
                     </Text>
                   </View>
-                {/* </ImageBackground> */}
+                </ImageBackground>
               </View>
-
               <Image
                 style={{
                   flex: 1,
@@ -140,7 +151,7 @@ class Cards extends Component {
                   width: null,
                   resizeMode: "cover",
                   borderRadius: 20,
-                  zIndex: -1,
+                  zIndex: this.state.currentIndex - 1,
                 }}
                 source={{
                   uri: "https://image.tmdb.org/t/p/w400" + item.poster_path,
@@ -166,21 +177,23 @@ class Cards extends Component {
                   right: 0,
                   position: "absolute",
                   padding: 10,
+                  zIndex: this.state.currentIndex - i,
                 }}
               >
-                {/* <ImageBackground
+                <ImageBackground
+                  style={{ width: "100%", height: "100%" }}
                   imageStyle={{
                     borderBottomLeftRadius: 20,
                     borderBottomRightRadius: 20,
                   }}
-                  style={{width: '100%', height: '100%'}}
+                  style={{ width: "100%", height: "100%" }}
                   source={require("../assets/gradient.png")}
-                > */}
-                  <View style={{ padding: "1em" }}>
+                >
+                  <View style={{ padding: 16 }}>
                     <Text
                       numberOfLines={2}
                       style={{
-                       fontSize: 40,
+                        fontSize: 40,
                         color: "#ffffff",
                         textShadowColor: "rgba(0, 0, 0, 0.75)",
                         textShadowOffset: { width: -1, height: 1 },
@@ -199,7 +212,7 @@ class Cards extends Component {
                       {item.overview}
                     </Text>
                   </View>
-                {/* </ImageBackground> */}
+                </ImageBackground>
               </View>
               <Image
                 style={[
@@ -209,6 +222,7 @@ class Cards extends Component {
                     width: null,
                     resizeMode: "cover",
                     borderRadius: 20,
+                    zIndex: this.state.currentIndex - i - 1,
                   },
                 ]}
                 source={{
@@ -224,14 +238,51 @@ class Cards extends Component {
 
   render() {
     const { movieList } = this.state;
-    movieList.map(item => {
-      if(item.poster_path != null){
-        Image.prefetch("https://image.tmdb.org/t/p/w400" + item.poster_path)
+    movieList.map((item) => {
+      if (item.poster_path != null) {
+        Image.prefetch("https://image.tmdb.org/t/p/w400" + item.poster_path);
       }
     });
     return (
       <View style={{ flex: 8 }}>
-        <View style={{ flex: 1 }}>{this.renderMovies(movieList)}</View>
+        <View style={{ flex: 7 }}>
+          {this.renderMovies(movieList)}
+          {this.state.swipes == 0 ? (
+            <View
+              style={{
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: -99,
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "OpenSansCondensed_700Bold",
+                  textTransform: "uppercase",
+                  letterSpacing: -0.5,
+                  fontSize: 40,
+                  marginBottom: 10,
+                }}
+              >
+                No more swipes
+              </Text>
+              <CustomButton
+                title="Go to chat"
+                style={{ width: "50%" }}
+                onPress={() => {
+                  socket.emit("getRoomMessages", this.props.user.room);
+                  navigation.navigate("Chat");
+                  setModalVisible(!modalVisible);
+                }}
+              />
+            </View>
+          ) : null}
+        </View>
+        <View style={{ flex: 1 }}>
+          <Buttons cardCount={this.state.swipes} />
+        </View>
       </View>
     );
   }

@@ -4,14 +4,22 @@ import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { socket } from "../components/Socket";
 
-function Header() {
+
+function Header(props) {
     const navigation = useNavigation();
     return (
         <View style={styles.header}  >
-            <Ionicons name="ios-settings" size={32} color="black" onPress={() => navigation.navigate('Login')}/>
+            <Ionicons name="ios-settings" size={32} color="black" onPress={() => {
+                socket.emit('updateUsersList', props.user.room);
+                navigation.navigate('Settings')
+                }}/>
             <FontAwesome name="eye" size={50} color="black" onPress={() => navigation.navigate('Swiper')} />
-            <Ionicons name="md-chatboxes" size={32} color="black" onPress={() => navigation.navigate('Chat')}/>
+            <Ionicons name="md-chatboxes" size={32} color="black" onPress={() => {
+                socket.emit("getRoomMessages",(props.user.room))
+                navigation.navigate('Chat')
+                }}/>
         </View>
     )
 }

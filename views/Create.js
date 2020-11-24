@@ -28,6 +28,7 @@ function Create(props) {
       socket.emit("sendRoomPin");
       socket.on("getRoomPin", (roomPin) => {
         setRoomState({pin: roomPin});
+        props.user.room = roomPin
         console.log(roomPin);
       })
     }
@@ -100,14 +101,28 @@ function Create(props) {
             )}
           />
         </View>
-
-        <CustomButton
+        {props.user.admin ? (
+          <CustomButton
           disabled={!props.user.admin}
           title="Start game"
           onPress={() => {
             navigation.navigate("Preferences");
           }}
         />
+        ) : (
+          <Text
+          style={{
+            fontFamily: "OpenSans_300Light",
+            letterSpacing: -0.5,
+            fontSize: 20,
+            marginBottom: 0,
+            lineHeight: 50,
+          }}
+        >
+          The host will start the game soon...
+        </Text>
+        )}
+        
       </View>
     );
   }

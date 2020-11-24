@@ -126,7 +126,7 @@ function Swiper(props) {
       {/* Header */}
       <Header user={props.user} /> 
       {/* Cards */}
-      <Cards movieList={search} />
+      <Cards movieList={search} user={props.user}/>
 
     </SafeAreaView>
   );

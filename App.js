@@ -37,13 +37,13 @@ export function App() {
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Join" component={Join} />
-          <Stack.Screen name="Create" component={Create} />
-          <Stack.Screen name="Preferences" component={Preferences} />
+        {/* <Stack.Screen name="Login" component={Login} /> */}
+          {/* <Stack.Screen name="Join" component={Join} />*/}
+          {/* <Stack.Screen name="Create" component={Create} />*/}
+          <Stack.Screen name="Preferences" component={Preferences} /> 
           <Stack.Screen name="Swiper" component={Swiper} />
-          <Stack.Screen name="Chat" component={Chat} />
-          <Stack.Screen name="Settings" component={Settings} />
+          {/* <Stack.Screen name="Chat" component={Chat} />
+          <Stack.Screen name="Settings" component={Settings} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>

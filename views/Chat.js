@@ -11,6 +11,10 @@ export function Chat(props) {
     const newMessages = await GiftedChat.append(messages, message);
     socket.on('message2', newMessages => { setMessages(newMessages) }); 
     socket.emit('newMessage', newMessages); }
+
+  socket.on("restoreMessages", (messages) => {
+    setMessages(messages)
+  })
   
   return (
     <GiftedChat

@@ -80,6 +80,7 @@ function Join(props) {
           style={{ marginTop: 8, marginBottom: 8 }}
           onPress={() => {
             let params = {name: props.user.name, room: value};
+            props.user.room = value;
             console.log(params)
             socket.emit("join", params, function (err) {
               if (err) {

@@ -28,6 +28,7 @@ function Create(props) {
       socket.emit("sendRoomPin");
       socket.on("getRoomPin", (roomPin) => {
         setRoomState({pin: roomPin});
+        props.user.room = roomPin
         console.log(roomPin);
       })
     }

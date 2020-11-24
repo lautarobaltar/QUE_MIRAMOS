@@ -28,13 +28,16 @@ function Swiper(props) {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [movieMatch, setMatch] = useState(0);
+
   socket.on("match", (movie) => {
     setMatch(movie);
     showModal();
   });
+
   function showModal() {
     setModalVisible(true);
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <Modal
@@ -113,6 +116,7 @@ function Swiper(props) {
             <CustomButton
               title="Go to chat"
               onPress={() => {
+                socket.emit("getRoomMessages",(props.user.room))
                 navigation.navigate("Chat");
                 setModalVisible(!modalVisible);
               }}
@@ -121,7 +125,7 @@ function Swiper(props) {
         </View>
       </Modal>
       {/* Header */}
-      <Header /> 
+      <Header user={props.user}/> 
       {/* Cards */}
       <Cards movieList={search} />
       {/* Buttons */}

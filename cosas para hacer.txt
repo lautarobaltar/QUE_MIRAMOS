@@ -1,0 +1,5 @@
+- año 
+- rating en estrellas 
+- genero 
+- pelicula en particular 
+- keyword 

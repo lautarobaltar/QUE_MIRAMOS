@@ -6,40 +6,16 @@ import UserContext from "../components/UserContext";
 export function Chat(props) {
   const randomId = Math.random() * 100;
   const [messages, setMessages] = useState([]);
-  useState(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: "Hello bitches",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "¿Qué miramos?",
-          avatar: "https://placeimg.com/140/140/any",
-        },
-      },
-    ]);
-  }, []);
 
-  useEffect(() => {
-    socket.on("message2", msg => {
-      setMessages(previous => {
-        console.log(msg[0].text);
-        console.log(messages[0].text);
-        if(msg[0].text != messages[0].text){
-          return [ 
-            msg[0],
-            ...previous           
-          ];
-        }        
-      });
-    })
-  })
-
+  const onSend = async (message = []) => { 
+    const newMessages = await GiftedChat.append(messages, message);
+    socket.on('message2', newMessages => { setMessages(newMessages) }); 
+    socket.emit('newMessage', newMessages); }
+  
   return (
     <GiftedChat
       messages={messages}
-      onSend={(msg) => socket.emit("newMessage", msg)}
+      onSend={(msg) => onSend(msg)}
       renderUsernameOnMessage={true}
       user={{ _id: randomId, name: props.user.name }}
     />

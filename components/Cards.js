@@ -100,14 +100,13 @@ class Cards extends Component {
                   padding: 10,
                 }}
               >
-                <ImageBackground
+                {/* <ImageBackground
                   imageStyle={{
                     borderBottomLeftRadius: 20,
                     borderBottomRightRadius: 20,
-                    width: '100%', height: '100%'
                   }}
                   source={require("../assets/gradient.png")}
-                >
+                > */}
                   <View style={{ padding: "1em" }}>
                     <Text
                       numberOfLines={2}
@@ -131,7 +130,7 @@ class Cards extends Component {
                       {item.overview}
                     </Text>
                   </View>
-                </ImageBackground>
+                {/* </ImageBackground> */}
               </View>
 
               <Image
@@ -169,13 +168,14 @@ class Cards extends Component {
                   padding: 10,
                 }}
               >
-                <ImageBackground
+                {/* <ImageBackground
                   imageStyle={{
                     borderBottomLeftRadius: 20,
                     borderBottomRightRadius: 20,
                   }}
+                  style={{width: '100%', height: '100%'}}
                   source={require("../assets/gradient.png")}
-                >
+                > */}
                   <View style={{ padding: "1em" }}>
                     <Text
                       numberOfLines={2}
@@ -199,7 +199,7 @@ class Cards extends Component {
                       {item.overview}
                     </Text>
                   </View>
-                </ImageBackground>
+                {/* </ImageBackground> */}
               </View>
               <Image
                 style={[

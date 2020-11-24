@@ -14,7 +14,7 @@ import { socket } from "../components/Socket";
 
 function Login(props) {
   const navigation = useNavigation();
-  const [value, onChangeText] = React.useState("Your name");
+  const [nameValue, onChangeText] = React.useState("Your name");
   let [fontsLoaded] = useFonts({
     OpenSansCondensed_700Bold,
     OpenSans_300Light,
@@ -49,14 +49,18 @@ function Login(props) {
         </Text>
         <TextInput
           style={styles.nameInput}
-          onChangeText={(text) => onChangeText(text)}
-          value={value}
+          onFocus={() => onChangeText("")}
+          onChangeText={(text) => {
+            onChangeText(text);
+            props.user.name = text;
+          }}
+          value={nameValue}
         />
         <CustomButton
           title="Create a room"
           style={{ marginTop: 8, marginBottom: 8 }}
           onPress={() => {
-            socket.emit("create", value, function (err) {
+            socket.emit("create", props.user.name, function (err) {
               if (err) {
                 alert(err);
                 navigation.navigate("Login");
@@ -78,5 +82,10 @@ function Login(props) {
   }
 }
 
+const LoginWithContext = (props) => (
+  <UserContext.Consumer>
+    {(user) => <Login {...props} user={user} />}
+  </UserContext.Consumer>
+);
 
-export default Login;
+export default LoginWithContext;

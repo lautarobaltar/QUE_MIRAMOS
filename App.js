@@ -50,4 +50,9 @@ export function App() {
   );
 }
 
-export default App;
+const AppWithContext = props => (
+  <UserContext.Provider value={user}>
+    <App />
+  </UserContext.Provider>
+)
+export default AppWithContext

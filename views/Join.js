@@ -72,12 +72,15 @@ function Join(props) {
           style={styles.nameInput}
           onChangeText={(text) => onChangeText(text)}
           value={value}
+          autoCapitalize="characters"
+          onFocus={() => onChangeText("")}
         />
         <CustomButton
           title="Join room"
           style={{ marginTop: 8, marginBottom: 8 }}
           onPress={() => {
-            let params = {name: 'pija', room: value};
+            let params = {name: props.user.name, room: value};
+            console.log(params)
             socket.emit("join", params, function (err) {
               if (err) {
                 alert(err);
@@ -89,24 +92,15 @@ function Join(props) {
             });
           }}
         />
-        {/* 
-        <CustomButton 
-          title="Join a room"
-          onPress={() => navigation.navigate('Join')}
-        /> */}
       </View>
     );
   }
 }
 
-const JoinWithSocket = (props) => (
-  <SocketContext.Consumer>
-    {(socket) => (
-      <UserContext.Consumer>
-        {(user) => <Join {...props} socket={socket} user={user} />}
-      </UserContext.Consumer>
-    )}
-  </SocketContext.Consumer>
+const JoinWithContext = (props) => (
+  <UserContext.Consumer>
+    {(user) => <Join {...props} user={user} />}
+  </UserContext.Consumer>
 );
 
-export default JoinWithSocket;
+export default JoinWithContext;

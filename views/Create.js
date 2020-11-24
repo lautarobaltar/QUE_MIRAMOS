@@ -106,4 +106,10 @@ function Create(props) {
   }
 }
 
-export default Create;
+const CreateWithContext = (props) => (
+  <UserContext.Consumer>
+    {(user) => <Create {...props} user={user} />}
+  </UserContext.Consumer>
+);
+
+export default CreateWithContext;

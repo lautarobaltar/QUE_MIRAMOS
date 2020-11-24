@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Buttons from "../components/Buttons";
-import CustomButton from "../components/CustomButton"
+import CustomButton from "../components/CustomButton";
 import styles from "./styles/index";
 import {
   Text,
@@ -26,7 +26,7 @@ class Cards extends Component {
     this.state = {
       currentIndex: 0,
       movieList: [],
-      swipes: 0
+      swipes: 0,
     };
   }
   componentDidMount() {
@@ -50,7 +50,7 @@ class Cards extends Component {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
-            this.setState({swipes: this.state.swipes -1});
+            this.setState({ swipes: this.state.swipes - 1 });
             console.log("movement right!");
             socket.emit(
               "likedMovie",
@@ -58,7 +58,6 @@ class Cards extends Component {
             );
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 });
-              
             });
           });
         } else if (gestureState.dx < -120) {
@@ -66,12 +65,11 @@ class Cards extends Component {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
-            this.setState({swipes: this.state.swipes -1});
+            this.setState({ swipes: this.state.swipes - 1 });
             console.log("movement left!");
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 });
             });
-            
           });
         } else {
           Animated.spring(this.position, {
@@ -100,7 +98,6 @@ class Cards extends Component {
                   height: SCREEN_HEIGHT - 180,
                   width: SCREEN_WIDTH,
                   position: "absolute",
-                
                 },
               ]}
             >
@@ -111,7 +108,7 @@ class Cards extends Component {
                   right: 0,
                   position: "absolute",
                   padding: 10,
-                  zIndex: this.state.currentIndex + 1
+                  zIndex: this.state.currentIndex + 1,
                 }}
               >
                 <ImageBackground
@@ -131,7 +128,6 @@ class Cards extends Component {
                         textShadowColor: "rgba(0, 0, 0, 0.75)",
                         textShadowOffset: { width: -1, height: 1 },
                         textShadowRadius: 10,
-
                       }}
                     >
                       {item.title}
@@ -155,7 +151,7 @@ class Cards extends Component {
                   width: null,
                   resizeMode: "cover",
                   borderRadius: 20,
-                  zIndex: this.state.currentIndex - 1
+                  zIndex: this.state.currentIndex - 1,
                 }}
                 source={{
                   uri: "https://image.tmdb.org/t/p/w400" + item.poster_path,
@@ -172,7 +168,6 @@ class Cards extends Component {
                 height: SCREEN_HEIGHT - 180,
                 width: SCREEN_WIDTH,
                 position: "absolute",
-                
               }}
             >
               <View
@@ -182,9 +177,8 @@ class Cards extends Component {
                   right: 0,
                   position: "absolute",
                   padding: 10,
-                  zIndex: this.state.currentIndex - i
+                  zIndex: this.state.currentIndex - i,
                 }}
-                
               >
                 <ImageBackground
                   style={{ width: "100%", height: "100%" }}
@@ -228,7 +222,7 @@ class Cards extends Component {
                     width: null,
                     resizeMode: "cover",
                     borderRadius: 20,
-                    zIndex: this.state.currentIndex - i - 1
+                    zIndex: this.state.currentIndex - i - 1,
                   },
                 ]}
                 source={{
@@ -253,28 +247,43 @@ class Cards extends Component {
       <View style={{ flex: 8 }}>
         <View style={{ flex: 7 }}>
           {this.renderMovies(movieList)}
-          <View style={{height:'100%', display:'flex', alignItems:'center', justifyContent:'center', zIndex: -99}}>
-            <Text style={{ fontFamily: "OpenSansCondensed_700Bold",
-            textTransform: "uppercase",
-            letterSpacing: -0.5,
-            fontSize: 40,
-            marginBottom: 10,}}>No more swipes</Text>
-            <CustomButton
-              title="Go to chat"
-              style={{width: '50%'}}
-              onPress={() => {
-                socket.emit("getRoomMessages",(props.user.room))
-                navigation.navigate("Chat");
-                setModalVisible(!modalVisible);
+          {this.state.swipes < 3 ? (
+            <View
+              style={{
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: -99,
               }}
-            />
-          </View>
+            >
+              <Text
+                style={{
+                  fontFamily: "OpenSansCondensed_700Bold",
+                  textTransform: "uppercase",
+                  letterSpacing: -0.5,
+                  fontSize: 40,
+                  marginBottom: 10,
+                }}
+              >
+                No more swipes
+              </Text>
+              <CustomButton
+                title="Go to chat"
+                style={{ width: "50%" }}
+                onPress={() => {
+                  socket.emit("getRoomMessages", props.user.room);
+                  navigation.navigate("Chat");
+                  setModalVisible(!modalVisible);
+                }}
+              />
+            </View>
+          ) : null}
         </View>
         <View style={{ flex: 1 }}>
-        <Buttons cardCount={this.state.swipes}/> 
+          <Buttons cardCount={this.state.swipes} />
         </View>
       </View>
-      
     );
   }
 }

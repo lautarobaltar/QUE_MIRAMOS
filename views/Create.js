@@ -101,14 +101,29 @@ function Create(props) {
             )}
           />
         </View>
-
-        <CustomButton
+        {props.user.admin ? (
+          <CustomButton
           disabled={!props.user.admin}
           title="Start game"
           onPress={() => {
             navigation.navigate("Preferences");
           }}
         />
+        ) : (
+          <Text
+          style={{
+            fontFamily: "OpenSansCondensed_700Bold",
+            textTransform: "uppercase",
+            letterSpacing: -0.5,
+            fontSize: 20,
+            marginBottom: 0,
+            lineHeight: 50,
+          }}
+        >
+          The host will start the game soon...
+        </Text>
+        )}
+        
       </View>
     );
   }

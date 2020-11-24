@@ -11,6 +11,7 @@ import {
   PanResponder,
   ImageBackground,
 } from "react-native";
+import { socket } from "./Socket";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -26,11 +27,19 @@ class Cards extends Component {
   }
   componentDidMount() {
     fetch(this.props.movieList)
+<<<<<<< HEAD
       .then((response) => response.json())
       .then((json) => {
         this.setState({ movieList: json.results });
       })
       .catch((error) => console.error(error));
+=======
+    .then((response) => response.json())
+    .then((json) => {
+      this.setState({movieList: json.results.slice(0,15)})
+    })
+    .catch((error) => console.error(error))
+>>>>>>> origin/lau-new
   }
   componentWillMount() {
     this.PanResponder = PanResponder.create({
@@ -44,12 +53,12 @@ class Cards extends Component {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
-            console.log("movement right!");
-            console.log(this.state.movieList[this.state.currentIndex]);
-            this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
-              this.position.setValue({ x: 0, y: 0 });
-            });
-          });
+            console.log("movement right!")
+            socket.emit("likedMovie",this.state.movieList[this.state.currentIndex])
+            this.setState({ currentIndex: this.state.currentIndex + 1 }, () =>{
+              this.position.setValue({x: 0, y: 0})
+            })
+          })
         } else if (gestureState.dx < -120) {
           Animated.spring(this.position, {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
@@ -222,9 +231,9 @@ class Cards extends Component {
 
   render() {
     const { movieList } = this.state;
-    movieList.forEach((item) => {
-      if (item.poster_path != null) {
-        Image.prefetch("https://image.tmdb.org/t/p/w400" + item.poster_path);
+    movieList.map(item => {
+      if(item.poster_path != null){
+        Image.prefetch("https://image.tmdb.org/t/p/w400" + item.poster_path)
       }
     });
     return (

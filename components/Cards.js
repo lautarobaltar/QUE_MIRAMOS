@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Dimensions,
   PanResponder,
+  ImageBackground,
 } from "react-native";
 import { socket } from "./Socket";
 
@@ -20,10 +21,9 @@ class Cards extends Component {
     super();
     this.position = new Animated.ValueXY();
     this.state = {
-        currentIndex: 0,
-        movieList: [],
-
-    }
+      currentIndex: 0,
+      movieList: [],
+    };
   }
   componentDidMount() {
     fetch(this.props.movieList)
@@ -40,10 +40,10 @@ class Cards extends Component {
         this.position.setValue({ x: gestureState.dx, y: gestureState.dy });
       },
       onPanResponderRelease: (evt, gestureState) => {
-        if(gestureState.dx > 120) {
+        if (gestureState.dx > 120) {
           Animated.spring(this.position, {
-            toValue: {x: SCREEN_WIDTH + 100, y: gestureState.dy},
-            useNativeDriver: true
+            toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
+            useNativeDriver: true,
           }).start(() => {
             console.log("movement right!")
             socket.emit("likedMovie",this.state.movieList[this.state.currentIndex])
@@ -53,82 +53,175 @@ class Cards extends Component {
           })
         } else if (gestureState.dx < -120) {
           Animated.spring(this.position, {
-            toValue: {x: -SCREEN_WIDTH - 100, y: gestureState.dy},
-            useNativeDriver: true
-          }).start(()=> {
-            console.log("movement left!")
-            this.setState({currentIndex: this.state.currentIndex + 1}, () => {
-              this.position.setValue({x: 0, y: 0})
-            })
-          })
+            toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
+            useNativeDriver: true,
+          }).start(() => {
+            console.log("movement left!");
+            this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
+              this.position.setValue({ x: 0, y: 0 });
+            });
+          });
         } else {
           Animated.spring(this.position, {
-            toValue: {x: 0, y:0},
+            toValue: { x: 0, y: 0 },
             friction: 4,
-            useNativeDriver: true
-          }).start()
+            useNativeDriver: true,
+          }).start();
         }
       },
     });
   }
   renderMovies = (apiCall) => {
-    return apiCall.map((item, i) => {
-      if (i < this.state.currentIndex ) {
+    return apiCall
+      .map((item, i) => {
+        if (i < this.state.currentIndex) {
           return null;
-      } else if ( i == this.state.currentIndex ) {
-        return (        
-          <Animated.View
-          {...this.PanResponder.panHandlers}
-          key={i}
-          style={[
-            { transform: this.position.getTranslateTransform() },
-            {
-              padding: 10,
-              height: SCREEN_HEIGHT - 180,
-              width: SCREEN_WIDTH,
-              position: "absolute",
-            }
-          ]}
-        >
-           <Image
-            style={{
-              flex: 1,
-              height: null,
-              width: null,
-              resizeMode: "cover",
-              borderRadius: 20,
-            }}
-            source={{ uri: ("https://image.tmdb.org/t/p/w400" + item.poster_path) }}
-          />
-        </Animated.View>
-        )
-      } else {
-        return (
-          <Animated.View
-          key={i}
-          style={{
-              padding: 10,
-              height: SCREEN_HEIGHT - 180,
-              width: SCREEN_WIDTH,
-              position: "absolute",
-            }}
-        >
-           <Image
-            style={[{
-              flex: 1,
-              height: null,
-              width: null,
-              resizeMode: "cover",
-              borderRadius: 20,
-            }]}
-            source={{ uri: "https://image.tmdb.org/t/p/w400" + item.poster_path }}
-          />
-        </Animated.View>
-        )
-      }
-    }).reverse();
+        } else if (i == this.state.currentIndex) {
+          return (
+            <Animated.View
+              {...this.PanResponder.panHandlers}
+              key={i}
+              style={[
+                { transform: this.position.getTranslateTransform() },
+                {
+                  padding: 10,
+                  height: SCREEN_HEIGHT - 180,
+                  width: SCREEN_WIDTH,
+                  position: "absolute",
+                },
+              ]}
+            >
+              <View
+                style={{
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  position: "absolute",
+                  padding: 10,
+                }}
+              >
+                {/* <ImageBackground
+                  imageStyle={{
+                    borderBottomLeftRadius: 20,
+                    borderBottomRightRadius: 20,
+                  }}
+                  source={require("../assets/gradient.png")}
+                > */}
+                  <View style={{ padding: "1em" }}>
+                    <Text
+                      numberOfLines={2}
+                      style={{
+                       fontSize: 40,
+                        color: "#ffffff",
+                        textShadowColor: "rgba(0, 0, 0, 0.75)",
+                        textShadowOffset: { width: -1, height: 1 },
+                        textShadowRadius: 10,
+                      }}
+                    >
+                      {item.title}
+                    </Text>
+                    <Text
+                      numberOfLines={4}
+                      style={{
+                        fontSize: 14,
+                        color: "#ffffff",
+                      }}
+                    >
+                      {item.overview}
+                    </Text>
+                  </View>
+                {/* </ImageBackground> */}
+              </View>
+
+              <Image
+                style={{
+                  flex: 1,
+                  height: null,
+                  width: null,
+                  resizeMode: "cover",
+                  borderRadius: 20,
+                  zIndex: -1,
+                }}
+                source={{
+                  uri: "https://image.tmdb.org/t/p/w400" + item.poster_path,
+                }}
+              />
+            </Animated.View>
+          );
+        } else {
+          return (
+            <Animated.View
+              key={i}
+              style={{
+                padding: 10,
+                height: SCREEN_HEIGHT - 180,
+                width: SCREEN_WIDTH,
+                position: "absolute",
+              }}
+            >
+              <View
+                style={{
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  position: "absolute",
+                  padding: 10,
+                }}
+              >
+                {/* <ImageBackground
+                  imageStyle={{
+                    borderBottomLeftRadius: 20,
+                    borderBottomRightRadius: 20,
+                  }}
+                  style={{width: '100%', height: '100%'}}
+                  source={require("../assets/gradient.png")}
+                > */}
+                  <View style={{ padding: "1em" }}>
+                    <Text
+                      numberOfLines={2}
+                      style={{
+                       fontSize: 40,
+                        color: "#ffffff",
+                        textShadowColor: "rgba(0, 0, 0, 0.75)",
+                        textShadowOffset: { width: -1, height: 1 },
+                        textShadowRadius: 10,
+                      }}
+                    >
+                      {item.title}
+                    </Text>
+                    <Text
+                      numberOfLines={4}
+                      style={{
+                        fontSize: 14,
+                        color: "#ffffff",
+                      }}
+                    >
+                      {item.overview}
+                    </Text>
+                  </View>
+                {/* </ImageBackground> */}
+              </View>
+              <Image
+                style={[
+                  {
+                    flex: 1,
+                    height: null,
+                    width: null,
+                    resizeMode: "cover",
+                    borderRadius: 20,
+                  },
+                ]}
+                source={{
+                  uri: "https://image.tmdb.org/t/p/w400" + item.poster_path,
+                }}
+              />
+            </Animated.View>
+          );
+        }
+      })
+      .reverse();
   };
-  
+
   render() {
     const { movieList } = this.state;
     movieList.map(item => {

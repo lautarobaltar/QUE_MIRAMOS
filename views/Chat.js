@@ -3,20 +3,9 @@ import { GiftedChat } from "react-native-gifted-chat";
 import { socket } from "../components/Socket";
 import UserContext from "../components/UserContext";
 
-socket.on('Message', messages => {
-  setMessages((prevMessages) => {
-    console.log("Prev: "+prevMessages)
-    console.log("New: "+messages)
-    GiftedChat.append(prevMessages, messages)
-  });
-  console.log(messages)
-})
-
-function Chat(props) {
-
+export function Chat(props) {
   const randomId = Math.random() * 100;
   const [messages, setMessages] = useState([]);
-
   useState(() => {
     setMessages([
       {
@@ -31,20 +20,26 @@ function Chat(props) {
       },
     ]);
   }, []);
- 
-  function onSend(messages) {
-    socket.emit('Message', messages);
-  }
 
-  function saveSendMessage(messages){
+  useEffect(() => {
+    socket.on("message2", msg => {
+      setMessages(previous => {
+        console.log(msg[0].text);
+        console.log(messages[0].text);
+        if(msg[0].text != messages[0].text){
+          return [ 
+            msg[0],
+            ...previous           
+          ];
+        }        
+      });
+    })
+  })
 
-  }
-
-  console.log(props.user.name);
   return (
     <GiftedChat
       messages={messages}
-      onSend={(messages) => onSend(messages)}
+      onSend={(msg) => socket.emit("newMessage", msg)}
       renderUsernameOnMessage={true}
       user={{ _id: randomId, name: props.user.name }}
     />

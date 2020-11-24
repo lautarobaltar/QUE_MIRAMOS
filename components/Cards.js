@@ -10,6 +10,7 @@ import {
   Dimensions,
   PanResponder,
 } from "react-native";
+import { socket } from "./Socket";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -28,7 +29,7 @@ class Cards extends Component {
     fetch(this.props.movieList)
     .then((response) => response.json())
     .then((json) => {
-      this.setState({movieList: json.results})
+      this.setState({movieList: json.results.slice(0,15)})
     })
     .catch((error) => console.error(error))
   }
@@ -45,6 +46,7 @@ class Cards extends Component {
             useNativeDriver: true
           }).start(() => {
             console.log("movement right!")
+            socket.emit("likedMovie",this.state.movieList[this.state.currentIndex])
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () =>{
               this.position.setValue({x: 0, y: 0})
             })
@@ -129,7 +131,7 @@ class Cards extends Component {
   
   render() {
     const { movieList } = this.state;
-    movieList.forEach(item => {
+    movieList.map(item => {
       if(item.poster_path != null){
         Image.prefetch("https://image.tmdb.org/t/p/w400" + item.poster_path)
       }

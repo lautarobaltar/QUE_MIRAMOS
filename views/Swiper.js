@@ -5,10 +5,15 @@ import Header from "../components/Header"
 import Cards from "../components/Cards"
 import Buttons from "../components/Buttons"
 import UserContext from "../components/UserContext";
+import {socket} from '../components/Socket';
 
 function Swiper(props) {
   
   let search = "http://morgarth.dumb1.com:3000" + props.user.query
+
+  socket.on("match", (movie) => {
+    alert(movie.title)
+  })
 
   return (
     <SafeAreaView style={styles.container}>

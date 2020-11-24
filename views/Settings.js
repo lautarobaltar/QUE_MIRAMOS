@@ -107,7 +107,7 @@ function Settings(props) {
           />
         </View>
         <CustomButton
-          disabled={!props.user.admin}
+        
           title="Logout"
           onPress={() => {
             // socket.disconnect()

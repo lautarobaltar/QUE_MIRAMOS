@@ -272,7 +272,7 @@ class Cards extends Component {
                 title="Go to chat"
                 style={{ width: "50%" }}
                 onPress={() => {
-                  socket.emit("getRoomMessages", props.user.room);
+                  socket.emit("getRoomMessages", this.props.user.room);
                   navigation.navigate("Chat");
                   setModalVisible(!modalVisible);
                 }}

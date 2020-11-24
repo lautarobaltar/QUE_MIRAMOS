@@ -27,11 +27,11 @@ class Cards extends Component {
   }
   componentDidMount() {
     fetch(this.props.movieList)
-    .then((response) => response.json())
-    .then((json) => {
-      this.setState({movieList: json.results.slice(0,15)})
-    })
-    .catch((error) => console.error(error))
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({ movieList: json.results.slice(0, 15) });
+      })
+      .catch((error) => console.error(error));
   }
   componentWillMount() {
     this.PanResponder = PanResponder.create({
@@ -45,12 +45,15 @@ class Cards extends Component {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
-            console.log("movement right!")
-            socket.emit("likedMovie",this.state.movieList[this.state.currentIndex])
-            this.setState({ currentIndex: this.state.currentIndex + 1 }, () =>{
-              this.position.setValue({x: 0, y: 0})
-            })
-          })
+            console.log("movement right!");
+            socket.emit(
+              "likedMovie",
+              this.state.movieList[this.state.currentIndex]
+            );
+            this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
+              this.position.setValue({ x: 0, y: 0 });
+            });
+          });
         } else if (gestureState.dx < -120) {
           Animated.spring(this.position, {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
@@ -88,6 +91,7 @@ class Cards extends Component {
                   height: SCREEN_HEIGHT - 180,
                   width: SCREEN_WIDTH,
                   position: "absolute",
+                
                 },
               ]}
             >
@@ -98,24 +102,27 @@ class Cards extends Component {
                   right: 0,
                   position: "absolute",
                   padding: 10,
+                  zIndex: this.state.currentIndex + 1
                 }}
               >
-                {/* <ImageBackground
+                <ImageBackground
+                  style={{ width: "100%", height: "100%" }}
                   imageStyle={{
                     borderBottomLeftRadius: 20,
                     borderBottomRightRadius: 20,
                   }}
                   source={require("../assets/gradient.png")}
-                > */}
-                  <View style={{ padding: "1em" }}>
+                >
+                  <View style={{ padding: 16 }}>
                     <Text
                       numberOfLines={2}
                       style={{
-                       fontSize: 40,
+                        fontSize: 40,
                         color: "#ffffff",
                         textShadowColor: "rgba(0, 0, 0, 0.75)",
                         textShadowOffset: { width: -1, height: 1 },
                         textShadowRadius: 10,
+
                       }}
                     >
                       {item.title}
@@ -130,9 +137,8 @@ class Cards extends Component {
                       {item.overview}
                     </Text>
                   </View>
-                {/* </ImageBackground> */}
+                </ImageBackground>
               </View>
-
               <Image
                 style={{
                   flex: 1,
@@ -140,7 +146,7 @@ class Cards extends Component {
                   width: null,
                   resizeMode: "cover",
                   borderRadius: 20,
-                  zIndex: -1,
+                  zIndex: this.state.currentIndex - 1
                 }}
                 source={{
                   uri: "https://image.tmdb.org/t/p/w400" + item.poster_path,
@@ -157,6 +163,7 @@ class Cards extends Component {
                 height: SCREEN_HEIGHT - 180,
                 width: SCREEN_WIDTH,
                 position: "absolute",
+                
               }}
             >
               <View
@@ -166,21 +173,24 @@ class Cards extends Component {
                   right: 0,
                   position: "absolute",
                   padding: 10,
+                  zIndex: this.state.currentIndex - i
                 }}
+                
               >
-                {/* <ImageBackground
+                <ImageBackground
+                  style={{ width: "100%", height: "100%" }}
                   imageStyle={{
                     borderBottomLeftRadius: 20,
                     borderBottomRightRadius: 20,
                   }}
-                  style={{width: '100%', height: '100%'}}
+                  style={{ width: "100%", height: "100%" }}
                   source={require("../assets/gradient.png")}
-                > */}
-                  <View style={{ padding: "1em" }}>
+                >
+                  <View style={{ padding: 16 }}>
                     <Text
                       numberOfLines={2}
                       style={{
-                       fontSize: 40,
+                        fontSize: 40,
                         color: "#ffffff",
                         textShadowColor: "rgba(0, 0, 0, 0.75)",
                         textShadowOffset: { width: -1, height: 1 },
@@ -199,7 +209,7 @@ class Cards extends Component {
                       {item.overview}
                     </Text>
                   </View>
-                {/* </ImageBackground> */}
+                </ImageBackground>
               </View>
               <Image
                 style={[
@@ -209,6 +219,7 @@ class Cards extends Component {
                     width: null,
                     resizeMode: "cover",
                     borderRadius: 20,
+                    zIndex: this.state.currentIndex - i - 1
                   },
                 ]}
                 source={{
@@ -224,9 +235,9 @@ class Cards extends Component {
 
   render() {
     const { movieList } = this.state;
-    movieList.map(item => {
-      if(item.poster_path != null){
-        Image.prefetch("https://image.tmdb.org/t/p/w400" + item.poster_path)
+    movieList.map((item) => {
+      if (item.poster_path != null) {
+        Image.prefetch("https://image.tmdb.org/t/p/w400" + item.poster_path);
       }
     });
     return (

@@ -60,6 +60,7 @@ function Login(props) {
           title="Create a room"
           style={{ marginTop: 8, marginBottom: 8 }}
           onPress={() => {
+            props.user.admin = true;
             socket.emit("create", props.user.name, function (err) {
               if (err) {
                 alert(err);

@@ -13,7 +13,7 @@ export default function Swiper() {
       {/* Header */}
       <Header />
       {/* Cards */}
-      <Cards movieList="http://morgarth.dumb1.com:3000/api/movies/search/rey leon" />
+      <Cards movieList="http://morgarth.dumb1.com:3000/api/movies/" />
       {/* Buttons */}
       <Buttons />
 

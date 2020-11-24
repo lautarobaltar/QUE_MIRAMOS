@@ -19,9 +19,10 @@ import { socket } from "../components/Socket";
 function Create(props) {
   const [roomState, setRoomState] = useState({pin: ''});
   const [usersState, setUsersState] = useState();
-
+  console.log(props.user.admin)
   const navigation = useNavigation();
   const [value, onChangeText] = React.useState("Your name");
+
   useEffect(() => {
     if(roomState.pin === ''){
       socket.emit("sendRoomPin");
@@ -30,6 +31,10 @@ function Create(props) {
         console.log(roomPin);
       })
     }
+
+    socket.on("start", () => {
+      navigation.navigate("Swiper")
+    })
     
   });
   socket.on("updateUsersList", (onlineUsers) => {
@@ -96,9 +101,11 @@ function Create(props) {
         </View>
 
         <CustomButton
+          disabled={!props.user.admin}
           title="Start game"
           onPress={() => {
-            navigation.navigate("Swiper");
+            socket.emit("gameStart");
+            navigation.navigate("Preferences");
           }}
         />
       </View>

@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import Header from "../components/Header";
 import Cards from "../components/Cards";
-import Buttons from "../components/Buttons";
 import UserContext from "../components/UserContext";
 import { socket } from "../components/Socket";
 import CustomButton from "../components/CustomButton";
@@ -123,13 +122,12 @@ function Swiper(props) {
             />
           </View>
         </View>
-      </Modal>
+      </Modal> 
       {/* Header */}
-      <Header user={props.user}/> 
+      <Header user={props.user} /> 
       {/* Cards */}
       <Cards movieList={search} />
-      {/* Buttons */}
-      <Buttons /> 
+
     </SafeAreaView>
   );
 }

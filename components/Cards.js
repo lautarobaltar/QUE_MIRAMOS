@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import Buttons from "../components/Buttons";
+import CustomButton from "../components/CustomButton"
 import styles from "./styles/index";
 import {
   Text,
@@ -15,6 +17,7 @@ import { socket } from "./Socket";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
+const MAX_SWIPES = 15;
 
 class Cards extends Component {
   constructor() {
@@ -23,13 +26,15 @@ class Cards extends Component {
     this.state = {
       currentIndex: 0,
       movieList: [],
+      swipes: 0
     };
   }
   componentDidMount() {
     fetch(this.props.movieList)
       .then((response) => response.json())
       .then((json) => {
-        this.setState({ movieList: json.results.slice(0, 15) });
+        this.setState({ movieList: json.results.slice(0, MAX_SWIPES) });
+        this.setState({ swipes: MAX_SWIPES });
       })
       .catch((error) => console.error(error));
   }
@@ -45,6 +50,7 @@ class Cards extends Component {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
+            this.setState({swipes: this.state.swipes -1});
             console.log("movement right!");
             socket.emit(
               "likedMovie",
@@ -52,6 +58,7 @@ class Cards extends Component {
             );
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 });
+              
             });
           });
         } else if (gestureState.dx < -120) {
@@ -59,10 +66,12 @@ class Cards extends Component {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
+            this.setState({swipes: this.state.swipes -1});
             console.log("movement left!");
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 });
             });
+            
           });
         } else {
           Animated.spring(this.position, {
@@ -242,8 +251,30 @@ class Cards extends Component {
     });
     return (
       <View style={{ flex: 8 }}>
-        <View style={{ flex: 1 }}>{this.renderMovies(movieList)}</View>
+        <View style={{ flex: 7 }}>
+          {this.renderMovies(movieList)}
+          <View style={{height:'100%', display:'flex', alignItems:'center', justifyContent:'center', zIndex: -99}}>
+            <Text style={{ fontFamily: "OpenSansCondensed_700Bold",
+            textTransform: "uppercase",
+            letterSpacing: -0.5,
+            fontSize: 40,
+            marginBottom: 10,}}>No more swipes</Text>
+            <CustomButton
+              title="Go to chat"
+              style={{width: '50%'}}
+              onPress={() => {
+                socket.emit("getRoomMessages",(props.user.room))
+                navigation.navigate("Chat");
+                setModalVisible(!modalVisible);
+              }}
+            />
+          </View>
+        </View>
+        <View style={{ flex: 1 }}>
+        <Buttons cardCount={this.state.swipes}/> 
+        </View>
       </View>
+      
     );
   }
 }

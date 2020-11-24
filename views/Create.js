@@ -32,7 +32,8 @@ function Create(props) {
       })
     }
 
-    socket.on("start", () => {
+    socket.on("start", (query) => {
+      props.user.query = query;
       navigation.navigate("Swiper")
     });
     

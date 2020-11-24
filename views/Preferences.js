@@ -105,7 +105,7 @@ function Preferences(props) {
           }}
           onPress={() => {
             loadPreferences(genre,stars,value, props.user)
-            socket.emit("gameStart");
+            socket.emit("gameStart",props.user.query);
             navigation.navigate('Swiper')
           }
           }

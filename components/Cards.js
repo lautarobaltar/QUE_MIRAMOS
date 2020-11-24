@@ -13,33 +13,6 @@ import {
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const mockMovies = [
-  {
-    id: "1",
-    uri:
-      "https://xl.movieposterdb.com/20_09/2018/1034415/xl_1034415_9a73edb1.jpg",
-  },
-  {
-    id: "2",
-    uri:
-      "https://xl.movieposterdb.com/15_05/2011/2098220/xl_2098220_007c38db.jpg",
-  },
-  {
-    id: "3",
-    uri:
-      "https://xl.movieposterdb.com/20_01/2019/6751668/xl_6751668_406fee8d.jpg",
-  },
-  {
-    id: "4",
-    uri:
-      "https://xl.movieposterdb.com/13_02/2001/241527/xl_241527_da927a3d.jpg",
-  },
-  {
-    id: "5",
-    uri:
-      "https://xl.movieposterdb.com/13_05/2002/275022/xl_275022_1b894848.jpg",
-  },
-];
 
 class Cards extends Component {
   constructor() {
@@ -71,6 +44,7 @@ class Cards extends Component {
             toValue: {x: SCREEN_WIDTH + 100, y: gestureState.dy},
             useNativeDriver: true
           }).start(() => {
+            console.log("movement right!")
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () =>{
               this.position.setValue({x: 0, y: 0})
             })
@@ -80,6 +54,7 @@ class Cards extends Component {
             toValue: {x: -SCREEN_WIDTH - 100, y: gestureState.dy},
             useNativeDriver: true
           }).start(()=> {
+            console.log("movement left!")
             this.setState({currentIndex: this.state.currentIndex + 1}, () => {
               this.position.setValue({x: 0, y: 0})
             })
